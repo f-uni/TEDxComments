@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tedxcomments_app/pages/login_page.dart';
+import 'package:tedxcomments_app/pages/profile_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         ),
         primaryColor: Colors.pink,
       ),
-      home: const LoginPage(),
+      home: const ProfilePage(),
     );
   }
 }
