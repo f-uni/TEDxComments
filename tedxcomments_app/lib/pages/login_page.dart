@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tedxcomments_app/pages/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -58,7 +59,10 @@ class _LoginPageState extends State<LoginPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: OutlinedButton(
-              onPressed: () {},
+              onPressed: () {
+                //TODO:leggo nome e faccio controlli
+                _completeLogin();
+              },
               child: const Text('Login'),
             ),
           ),
@@ -76,5 +80,14 @@ class _LoginPageState extends State<LoginPage> {
         ],
       ),
     ));
+  }
+
+  void _completeLogin() {
+    Navigator.pushReplacement<void, void>(
+      context,
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => const HomePage(),
+      ),
+    );
   }
 }

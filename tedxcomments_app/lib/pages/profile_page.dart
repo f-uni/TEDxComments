@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tedxcomments_app/widgets/navigationbar.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -19,6 +20,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      bottomNavigationBar: CustomNavigationBar(page: 2),
         body: Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
