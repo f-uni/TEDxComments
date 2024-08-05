@@ -8,23 +8,73 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final userController = TextEditingController();
+
+  @override
+  void dispose() {
+    userController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'Welcome',
-              style: Theme.of(context).textTheme.headlineMedium,
+        body: Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          const Spacer(
+            flex: 1,
+          ),
+          Text(
+            'Welcome to',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(
+            height: 10,
+          ),
+          Text(
+            'TEDxComments',
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium
+                ?.apply(color: Theme.of(context).colorScheme.secondary),
+          ),
+          const SizedBox(
+            height: 100,
+          ),
+          SizedBox(
+            width: 300,
+            child: TextField(
+              controller: userController,
+              decoration: const InputDecoration(
+                suffixIcon: Icon(Icons.account_circle_outlined),
+                border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(32))),
+                labelText: 'Username',
+              ),
             ),
-            const Text(
-              'You have pushed the button this many times:',
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: OutlinedButton(
+              onPressed: () {},
+              child: const Text('Login'),
             ),
-          ],
-        ),
-      )
-    );
+          ),
+          const Spacer(
+            flex: 2,
+          ),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              '"The fewer ideas you have,\nthe less you are willing to change them"\n-Michelangelo',
+              style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    ));
   }
 }

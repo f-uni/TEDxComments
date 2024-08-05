@@ -15,7 +15,18 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         useMaterial3: true,
-        brightness: Brightness.dark
+        colorScheme: ColorScheme(
+          primary: Color(0xFFd0befb),
+          secondary: Color(0xFFffd8e4),
+          surface: Color(0xFF141218),
+          error: Colors.redAccent,
+          onError: Colors.white,
+          onPrimary: Colors.white,
+          onSecondary: Colors.white,
+          onSurface: Colors.white,
+          brightness: Brightness.dark,
+        ),
+        primaryColor: Colors.pink,
       ),
       home: const LoginPage(),
     );
