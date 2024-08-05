@@ -20,29 +20,20 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: CustomNavigationBar(page: 2),
+        bottomNavigationBar: const CustomNavigationBar(page: 2),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               const Spacer(
-                flex: 1,
               ),
-              //   const SizedBox(
-              //     height: 100,
-              //   ),
-              const SizedBox(
-                  width: 250,
-                  height: 250,
-                  child: Icon(
-                    Icons.account_circle_rounded,
-                    size: 250,
-                  )),
-              const SizedBox(
-                child: Text(
-                  "Username",
-                  style: TextStyle(fontSize: 25),
-                ),
+              const Icon(
+                Icons.account_circle_rounded,
+                size: 300,
+              ),
+              const Text(
+                "Username",
+                style: TextStyle(fontSize: 25),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -53,7 +44,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
               ),
               const Spacer(
-                flex: 2,
               ),
             ],
           ),
