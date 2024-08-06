@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:tedxcomments_app/widgets/navigationbar.dart';
 
 class SearchPage extends StatefulWidget {
@@ -63,7 +62,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        bottomNavigationBar: CustomNavigationBar(page: 1),
+        bottomNavigationBar: const CustomNavigationBar(page: 1),
         body: Column(
           children: <Widget>[
             const SizedBox(

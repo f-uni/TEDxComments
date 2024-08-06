@@ -9,7 +9,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,8 +17,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Spacer(
-              ),
+              const Spacer(),
               const Icon(
                 Icons.account_circle_rounded,
                 size: 300,
@@ -36,8 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       const Text("Logout", style: TextStyle(color: Colors.red)),
                 ),
               ),
-              const Spacer(
-              ),
+              const Spacer(),
             ],
           ),
         ));
