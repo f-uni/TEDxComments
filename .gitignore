@@ -9,3 +9,13 @@ tedxcomments_app/windows/flutter/generated_plugin_registrant.cc
 tedxcomments_app/windows/flutter/generated_plugin_registrant.h
 tedxcomments_app/windows/flutter/generated_plugins.cmake
 tedxcomments_app/linux/flutter/generated_plugin_registrant.cc
+tedxcomments_app/linux/flutter/generated_plugin_registrant.cc
+tedxcomments_app/linux/flutter/generated_plugin_registrant.h
+tedxcomments_app/linux/flutter/generated_plugins.cmake
+*.cmake
+*.h
+*.cc
+tedxcomments_app/macos/Flutter/GeneratedPluginRegistrant.swift
+*.cc
+*.h
+*.cmake
