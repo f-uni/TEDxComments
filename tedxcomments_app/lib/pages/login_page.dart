@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tedxcomments_app/pages/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -9,11 +10,23 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final userController = TextEditingController();
+  final usernameController = TextEditingController();
+  
+  String username = "vuoto";
+
+  void loadData() async {
+    final SharedPreferences preferences = await SharedPreferences.getInstance();
+
+    setState(() {
+      username = preferences.getString('username') ?? 'vuoto';
+
+	  var dataString = preferences.getString(key)
+    });
+  }
 
   @override
   void dispose() {
-    userController.dispose();
+    usernameController.dispose();
     super.dispose();
   }
 
@@ -47,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
           SizedBox(
             width: 300,
             child: TextField(
-              controller: userController,
+              controller: usernameController,
               decoration: const InputDecoration(
                 suffixIcon: Icon(Icons.account_circle_outlined),
                 border: OutlineInputBorder(
