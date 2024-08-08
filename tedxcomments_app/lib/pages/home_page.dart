@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
     tags = DataProvider.tags;
     tags.shuffle();
     tags = tags.take(20).toList();
+    tags[0]="design";
     super.initState();
   }
 
@@ -31,7 +32,7 @@ class _HomePageState extends State<HomePage> {
         body: Column(
           children: [
             const SizedBox(
-              height: 32,
+              height: 24,
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -48,7 +49,6 @@ class _HomePageState extends State<HomePage> {
             FutureBuilder(
               future: DataProvider.getTalksByTag(tags[selectedTag], 1),
               builder: (context, snapshot) {
-                // Controlla lo stato del Future
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
@@ -64,9 +64,12 @@ class _HomePageState extends State<HomePage> {
                         itemBuilder: (context, index) => TalkThumbnail(
                               talk: talks[index],
                             ),
-                        separatorBuilder: (context, index) => const Divider(
-                              color: Colors.grey,
-                            ),
+                        separatorBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+                          child: Divider(
+                                color: Colors.grey.shade700,
+                              ),
+                        ),
                         itemCount: snapshot.data!.length),
                   );
                 }

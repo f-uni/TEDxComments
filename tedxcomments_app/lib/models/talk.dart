@@ -1,4 +1,5 @@
 class Talk {
+  final String id;
   final String speakers;
   final String title;
   final String url;
@@ -12,7 +13,8 @@ class Talk {
   final dynamic comments;
 
   Talk.fromJSON(Map<String, dynamic> jsonMap)
-      : speakers = jsonMap["speakers"] ?? "",
+      : id = jsonMap["_id"] ?? "",
+        speakers = jsonMap["speakers"] ?? "",
         title = jsonMap["title"] ?? "",
         url = jsonMap["url"] ?? "",
         description = jsonMap["description"] ?? "",

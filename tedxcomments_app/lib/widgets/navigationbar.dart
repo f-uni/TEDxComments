@@ -51,7 +51,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
       const SearchPage(),
       const ProfilePage()
     ];
-    Navigator.pushReplacement(
+    Navigator.push(
       context,
       PageRouteBuilder(
         pageBuilder: (context, animation1, animation2) => pages[index],

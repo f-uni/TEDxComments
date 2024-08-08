@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
           onSurface: Colors.white,
           brightness: Brightness.dark,
         ),
-        primaryColor: Colors.pink,
+        primaryColor: const Color(0xFFffd8e4),
       ),
       home: const LoginPage(),
     );

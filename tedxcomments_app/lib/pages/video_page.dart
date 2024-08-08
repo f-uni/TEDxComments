@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:tedxcomments_app/models/talk.dart';
+import 'package:tedxcomments_app/widgets/related_videos_list.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class VideoPage extends StatefulWidget {
@@ -17,7 +18,9 @@ class _VideoPageState extends State<VideoPage> {
   late final String videoUrl;
   late final WebViewController controller;
   late final Timer timer;
-  int time = 0;
+
+  late List<dynamic> comments;
+
   @override
   void initState() {
     super.initState();
@@ -35,7 +38,7 @@ class _VideoPageState extends State<VideoPage> {
             controller.runJavaScript(
                 "document.getElementsByClassName('Embeddable__button Embeddable__controls__outbound')[0].style.display='none'");
             timer = Timer.periodic(
-                const Duration(seconds: 10), (Timer t) => _readTiming());
+                const Duration(seconds: 1), (Timer t) => _readTiming());
           },
           onHttpError: (HttpResponseError error) {},
           onWebResourceError: (WebResourceError error) {},
@@ -45,6 +48,11 @@ class _VideoPageState extends State<VideoPage> {
         ),
       )
       ..loadRequest(Uri.parse(videoUrl));
+
+      comments = talk.comments["info"] + talk.comments["disc"]+ talk.comments["extra"];
+      print(comments);
+      comments.sort((a,b)=> a["timestamp"].compareTo(b["timestamp"]));
+      print(comments);
   }
 
   @override
@@ -72,21 +80,22 @@ class _VideoPageState extends State<VideoPage> {
                 "${talk.speakers} - ${talk.views} views",
                 style: const TextStyle(fontSize: 14),
               ),
-              Text("timing = $time ")
-              
+
+              RelatedVideosList(talk: talk)
             ],
           ),
         ));
   }
 
   _readTiming() async {
-    String time = await controller.runJavaScriptReturningResult(
+    String timeStr = await controller.runJavaScriptReturningResult(
             "document.getElementsByClassName('Embeddable__controls__current')[0].innerHTML")
         as String;
 
-    final ms = time.replaceAll("\"", "").split(":");
-    setState(() {
-      this.time = int.parse(ms[0]) * 60 + int.parse(ms[1]);
-    });
+    final ms = timeStr.replaceAll("\"", "").split(":");
+    int time = int.parse(ms[0]) * 60 + int.parse(ms[1]);
+    
+    dynamic res = comments.firstWhere((element)=> element["timestamp"] == time, orElse: ()=>null);
+    print(res);
   }
 }

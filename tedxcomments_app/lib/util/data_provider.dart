@@ -5,7 +5,7 @@ import 'package:tedxcomments_app/models/talk.dart';
 class DataProvider {
   static Future<List<Talk>> getTalksByTag(String tag, int page) async {
     var url = Uri.parse(
-        'https://qu8fue0327.execute-api.us-east-1.amazonaws.com/default/GetTalksByTag');
+        'https://4qjhfi10m5.execute-api.us-east-1.amazonaws.com/default/TxC_GetTalksByTag');
 
     final http.Response response = await http.post(
       url,
@@ -17,6 +17,27 @@ class DataProvider {
     );
     if (response.statusCode == 200) {
       Iterable list = json.decode(response.body);
+      var talks = list.map((model) => Talk.fromJSON(model)).toList();
+      return talks;
+    } else {
+      throw Exception('Failed to load talks');
+    }
+  }
+
+  static Future<List<Talk>> getRelatedTalksById(String id) async {
+    var url = Uri.parse(
+        'https://p0nmsrz2dg.execute-api.us-east-1.amazonaws.com/default/TxC_GetWatchNextById');
+
+    final http.Response response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(
+          <String, Object>{'video_id': id}),
+    );
+    if (response.statusCode == 200) {
+      Iterable list = json.decode(response.body)["result"]["related_videos"];
       var talks = list.map((model) => Talk.fromJSON(model)).toList();
       return talks;
     } else {
