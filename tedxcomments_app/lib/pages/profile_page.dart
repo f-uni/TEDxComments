@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tedxcomments_app/widgets/navigationbar.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -9,6 +10,23 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late final SharedPreferences prefs;
+  String username = "";
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initPrefs();
+  }
+
+  void _initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString("username")!;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,8 +40,8 @@ class _ProfilePageState extends State<ProfilePage> {
                 Icons.account_circle_rounded,
                 size: 300,
               ),
-              const Text(
-                "Username",
+              Text(
+                username,
                 style: TextStyle(fontSize: 25),
               ),
               Padding(

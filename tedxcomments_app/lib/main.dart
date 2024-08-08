@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tedxcomments_app/pages/login_page.dart';
 
 void main() {
@@ -7,6 +8,7 @@ void main() {
     systemNavigationBarColor:
         Color(0xFF211f26), // Change this to your desired color
   ));
+  // final prefs = await SharedPreferences.getInstance();
   runApp(const MyApp());
 }
 
@@ -36,4 +38,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-

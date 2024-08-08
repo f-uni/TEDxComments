@@ -11,17 +11,18 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final usernameController = TextEditingController();
-  
-  String username = "vuoto";
 
-  void loadData() async {
-    final SharedPreferences preferences = await SharedPreferences.getInstance();
+  late final SharedPreferences prefs;
 
-    setState(() {
-      username = preferences.getString('username') ?? 'vuoto';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _initPrefs();
+  }
 
-	  var dataString = preferences.getString(key)
-    });
+  void _initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
   }
 
   @override
@@ -59,7 +60,14 @@ class _LoginPageState extends State<LoginPage> {
           ),
           SizedBox(
             width: 300,
-            child: TextField(
+            child: TextFormField(
+              validator: (value) {
+                print(value);
+                if (value == null || value.isEmpty || value.length < 3) {
+                  return "username too short";
+                }
+                return "ok!";
+              },
               controller: usernameController,
               decoration: const InputDecoration(
                 suffixIcon: Icon(Icons.account_circle_outlined),
@@ -72,9 +80,17 @@ class _LoginPageState extends State<LoginPage> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: OutlinedButton(
-              onPressed: () {
-                //TODO:leggo nome e faccio controlli
+              onPressed: () async {
+                // if (usernameController.text.length < 3) {
+                //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                //       duration: Duration(seconds: 5),
+                //       content: Text("Username too short!")));
+                // } else {
+                await prefs.setString('username', usernameController.text);
+                // print(prefs.getString("username"));
                 _completeLogin();
+                // }
+                //TODO:leggo nome e faccio controlli
               },
               child: const Text('Login'),
             ),
