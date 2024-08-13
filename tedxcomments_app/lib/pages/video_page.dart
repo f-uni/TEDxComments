@@ -96,6 +96,5 @@ class _VideoPageState extends State<VideoPage> {
     int time = int.parse(ms[0]) * 60 + int.parse(ms[1]);
     
     dynamic res = comments.firstWhere((element)=> element["timestamp"] == time, orElse: ()=>null);
-    print(res);
   }
 }
