@@ -1,7 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:tedxcomments_app/models/comment.dart';
 import 'package:tedxcomments_app/models/talk.dart';
+import 'package:tedxcomments_app/widgets/comment_preview.dart';
+import 'package:tedxcomments_app/widgets/comments_list.dart';
 import 'package:tedxcomments_app/widgets/related_videos_list.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -19,7 +22,9 @@ class _VideoPageState extends State<VideoPage> {
   late final WebViewController controller;
   late final Timer timer;
 
-  late List<dynamic> comments;
+  List<Comment?> comments = [];
+
+  Comment? comment;
 
   @override
   void initState() {
@@ -49,10 +54,17 @@ class _VideoPageState extends State<VideoPage> {
       )
       ..loadRequest(Uri.parse(videoUrl));
 
-      comments = talk.comments["info"] + talk.comments["disc"]+ talk.comments["extra"];
-      print(comments);
-      comments.sort((a,b)=> a["timestamp"].compareTo(b["timestamp"]));
-      print(comments);
+    comments += talk.comments["info"]
+        .map<Comment?>((model) => Comment.fromJSON(model))
+        .toList();
+    comments += talk.comments["disc"]
+        .map<Comment?>((model) => Comment.fromJSON(model))
+        .toList();
+    comments += talk.comments["extra"]
+        .map<Comment?>((model) => Comment.fromJSON(model))
+        .toList();
+
+    comments.sort((a, b) => a!.timestamp.compareTo(b!.timestamp));
   }
 
   @override
@@ -61,30 +73,105 @@ class _VideoPageState extends State<VideoPage> {
     super.dispose();
   }
 
+   bool _showModal = false;
+
+  void _openModal() {
+    setState(() {
+      _showModal = true;
+    });
+  }
+
+  void _closeModal() {
+    setState(() {
+      _showModal = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              AspectRatio(
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Stack(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                AspectRatio(
                   aspectRatio: 16 / 9,
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: WebViewWidget(controller: controller))),
-              Text(talk.title, style: const TextStyle(fontSize: 22)),
-              Text(
-                "${talk.speakers} - ${talk.views} views",
-                style: const TextStyle(fontSize: 14),
+                    borderRadius: BorderRadius.circular(16),
+                    child: WebViewWidget(controller: controller),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2),
+                  child: Text(widget.talk.title, style: const TextStyle(fontSize: 22)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2),
+                  child: Text(
+                    "${widget.talk.speakers} - ${widget.talk.views} views",
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                CommentPreview(comment: comment, callback: _openModal),
+                RelatedVideosList(talk: widget.talk),
+              ],
+            ),
+            if (_showModal)
+              NotificationListener<DraggableScrollableNotification>(
+                onNotification: (notification) {
+                  if (notification.extent == notification.minExtent) {
+                    _closeModal();
+                  }
+                  return true;
+                },
+                child: DraggableScrollableSheet(
+                  initialChildSize: 0.5,
+                  minChildSize: 0.3,
+                  maxChildSize: 0.9,
+                  builder: (BuildContext context, ScrollController scrollController) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.surface,
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(16),
+                        ),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Handle bar for dragging
+                          Container(
+                            alignment: Alignment.center,
+                            margin: const EdgeInsets.only(top: 8.0),
+                            child: Container(
+                              width: 40,
+                              height: 4,
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [IconButton(onPressed: (){}, icon: const Icon(Icons.add_comment))],
+                          ),
+                          CommentsList(comments:comments),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
-
-              RelatedVideosList(talk: talk)
-            ],
-          ),
-        ));
+          ],
+        ),
+      ),
+    );
   }
 
   _readTiming() async {
@@ -94,7 +181,14 @@ class _VideoPageState extends State<VideoPage> {
 
     final ms = timeStr.replaceAll("\"", "").split(":");
     int time = int.parse(ms[0]) * 60 + int.parse(ms[1]);
-    
-    dynamic res = comments.firstWhere((element)=> element["timestamp"] == time, orElse: ()=>null);
+
+    Comment? res = comments.firstWhere((element) => element?.timestamp == time,
+        orElse: () => null);
+    setState(() {
+      if (res != null) {
+        comment = res;
+      }
+    });
   }
+
 }
