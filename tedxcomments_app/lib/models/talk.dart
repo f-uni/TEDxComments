@@ -25,5 +25,5 @@ class Talk {
         imageUrl = jsonMap["img_url"],
         relatedVideo = jsonMap["related_videos"] ?? [],
         views = jsonMap["views"] ?? "0",
-        comments = jsonMap["comments"] ?? [];
+        comments = jsonMap["comments"] ?? {"info":[], "disc":[], "extra":[]};
 }

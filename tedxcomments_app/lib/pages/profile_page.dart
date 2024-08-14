@@ -43,7 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               Text(
                 username,
-                style: TextStyle(fontSize: 25),
+                style: const TextStyle(fontSize: 25),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),

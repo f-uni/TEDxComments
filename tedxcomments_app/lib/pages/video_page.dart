@@ -20,6 +20,9 @@ class _VideoPageState extends State<VideoPage> {
   late final Talk talk;
   late final String videoUrl;
   late final WebViewController controller;
+  final DraggableScrollableController sheetController =
+      DraggableScrollableController();
+
   late final Timer timer;
 
   List<Comment?> comments = [];
@@ -73,7 +76,7 @@ class _VideoPageState extends State<VideoPage> {
     super.dispose();
   }
 
-   bool _showModal = false;
+  bool _showModal = false;
 
   void _openModal() {
     setState(() {
@@ -90,14 +93,17 @@ class _VideoPageState extends State<VideoPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Stack(
+        padding: const EdgeInsets.only(top: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            const SizedBox(
+              height: 24,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Stack(children: [
                 AspectRatio(
                   aspectRatio: 16 / 9,
                   child: ClipRRect(
@@ -106,68 +112,114 @@ class _VideoPageState extends State<VideoPage> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2),
-                  child: Text(widget.talk.title, style: const TextStyle(fontSize: 22)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2),
-                  child: Text(
-                    "${widget.talk.speakers} - ${widget.talk.views} views",
-                    style: const TextStyle(fontSize: 14),
+                  padding: const EdgeInsets.all(4.0),
+                  child: Container(
+                    height: 40,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(32),
+                      color: const Color.fromARGB(255, 74, 68, 88),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.arrow_back, size: 24,),
+                      
+                      onPressed: () => Navigator.pop(context),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                CommentPreview(comment: comment, callback: _openModal),
-                RelatedVideosList(talk: widget.talk),
-              ],
+                )
+              ]),
             ),
-            if (_showModal)
-              NotificationListener<DraggableScrollableNotification>(
-                onNotification: (notification) {
-                  if (notification.extent == notification.minExtent) {
-                    _closeModal();
-                  }
-                  return true;
-                },
-                child: DraggableScrollableSheet(
-                  initialChildSize: 0.5,
-                  minChildSize: 0.3,
-                  maxChildSize: 0.9,
-                  builder: (BuildContext context, ScrollController scrollController) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.surface,
-                        borderRadius: const BorderRadius.vertical(
-                          top: Radius.circular(16),
-                        ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Handle bar for dragging
-                          Container(
-                            alignment: Alignment.center,
-                            margin: const EdgeInsets.only(top: 8.0),
-                            child: Container(
-                              width: 40,
-                              height: 4,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+              child:
+                  Text(widget.talk.title, style: const TextStyle(fontSize: 22)),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+              child: Text(
+                "${widget.talk.speakers} - ${widget.talk.views} views",
+                style: const TextStyle(fontSize: 14),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Expanded(
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CommentPreview(comment: comment, callback: _openModal),
+                        RelatedVideosList(talk: widget.talk),
+                      ],
+                    ),
+                  ),
+                  if (_showModal)
+                    NotificationListener<DraggableScrollableNotification>(
+                      onNotification: (notification) {
+                        if (notification.extent < 0.5) {
+                          _closeModal();
+                        }
+                        return true;
+                      },
+                      child: DraggableScrollableSheet(
+                        initialChildSize: 1,
+                        snap: true,
+                        controller: sheetController,
+                        builder: (BuildContext context, scrollController) {
+                          return Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: const BoxDecoration(
+                              color: Color.fromARGB(255, 33, 31, 38),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25),
+                                topRight: Radius.circular(25),
                               ),
                             ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [IconButton(onPressed: (){}, icon: const Icon(Icons.add_comment))],
-                          ),
-                          CommentsList(comments:comments),
-                        ],
+                            child: CustomScrollView(
+                              controller: scrollController,
+                              slivers: [
+                                SliverAppBar(
+                                  primary: false,
+                                  backgroundColor:
+                                      const Color.fromARGB(255, 33, 31, 38),
+                                  floating: true,
+                                  scrolledUnderElevation: 0,
+                                  leading: Container(),
+                                  title: Center(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).hintColor,
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(10)),
+                                      ),
+                                      height: 4,
+                                      width: 40,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                    ),
+                                  ),
+                                  pinned: true,
+                                  actions: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(Icons.add_comment)),
+                                    )
+                                  ],
+                                ),
+                                CommentsList(comments: comments)
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                    );
-                  },
-                ),
+                    ),
+                ],
               ),
+            ),
           ],
         ),
       ),
@@ -190,5 +242,4 @@ class _VideoPageState extends State<VideoPage> {
       }
     });
   }
-
 }
