@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tedxcomments_app/pages/home_page.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+// import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -105,17 +104,12 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const Padding(
                 padding: EdgeInsets.all(16.0),
-                child: Builder(
-                  builder: (context) {
-                    if (condition) {}
-                  },
+                child: Text(
+                  '"The fewer ideas you have,\nthe less you are willing to change them"\n-Michelangelo',
+                  style: TextStyle(
+                      fontStyle: FontStyle.italic, color: Colors.grey),
+                  textAlign: TextAlign.center,
                 ),
-                // child: Text(
-                //   '"The fewer ideas you have,\nthe less you are willing to change them"\n-Michelangelo',
-                //   style: TextStyle(
-                //       fontStyle: FontStyle.italic, color: Colors.grey),
-                //   textAlign: TextAlign.center,
-                // ),
               ),
             ],
           ),
