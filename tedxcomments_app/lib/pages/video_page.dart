@@ -121,8 +121,10 @@ class _VideoPageState extends State<VideoPage> {
                       color: const Color.fromARGB(255, 74, 68, 88),
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.arrow_back, size: 24,),
-                      
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        size: 24,
+                      ),
                       onPressed: () => Navigator.pop(context),
                     ),
                   ),
