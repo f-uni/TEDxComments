@@ -27,7 +27,7 @@ class TalkThumbnail extends StatelessWidget {
               height: 8,
             ),
             Text(
-              talk.title,
+              talk. title,
               style: const TextStyle(fontSize: 22),
               overflow: TextOverflow.ellipsis,
             ),
