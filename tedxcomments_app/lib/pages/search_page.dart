@@ -62,6 +62,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        resizeToAvoidBottomInset: false,
         bottomNavigationBar: const CustomNavigationBar(page: 1),
         body: Column(
           children: <Widget>[
