@@ -12,7 +12,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final _LoginFormKey = GlobalKey<FormState>();
+  final _loginFormKey = GlobalKey<FormState>();
   final usernameController = TextEditingController();
 
   late final SharedPreferences prefs;
@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(
                 width: 300,
                 child: Form(
-                  key: _LoginFormKey,
+                  key: _loginFormKey,
                   child: TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -88,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: OutlinedButton(
                   onPressed: () async {
-                    if (_LoginFormKey.currentState!.validate()) {
+                    if (_loginFormKey.currentState!.validate()) {
                       await prefs.setString(
                           'username', usernameController.text);
                       // print(prefs.getString("username"));

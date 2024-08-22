@@ -21,19 +21,26 @@ class _HomePageState extends State<HomePage> {
     tags = DataProvider.tags;
     tags.shuffle();
     tags = tags.take(20).toList();
-    tags[0]="design";
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          title: Text(
+            "TEDxComments",
+            style: Theme.of(context)
+                .textTheme
+                .headlineSmall
+                ?.apply(color: Theme.of(context).colorScheme.secondary),
+          ),
+          automaticallyImplyLeading: false,
+        ),
         bottomNavigationBar: const CustomNavigationBar(page: 0),
         body: Column(
           children: [
-            const SizedBox(
-              height: 24,
-            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Tags(
@@ -52,11 +59,9 @@ class _HomePageState extends State<HomePage> {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const CircularProgressIndicator();
                 } else if (snapshot.hasError) {
-                  return Text(
-                      'Errore: ${snapshot.error}'); 
+                  return Text('Errore: ${snapshot.error}');
                 } else if (!snapshot.hasData) {
-                  return const Text(
-                      'Nessun dato disponibile');
+                  return const Text('Nessun dato disponibile');
                 } else {
                   List<Talk> talks = snapshot.data!;
                   return Expanded(
@@ -65,11 +70,12 @@ class _HomePageState extends State<HomePage> {
                               talk: talks[index],
                             ),
                         separatorBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
-                          child: Divider(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 0),
+                              child: Divider(
                                 color: Colors.grey.shade700,
                               ),
-                        ),
+                            ),
                         itemCount: snapshot.data!.length),
                   );
                 }

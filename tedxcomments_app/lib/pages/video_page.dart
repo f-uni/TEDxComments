@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tedxcomments_app/models/comment.dart';
 import 'package:tedxcomments_app/models/talk.dart';
+import 'package:tedxcomments_app/util/data_provider.dart';
 import 'package:tedxcomments_app/widgets/comment_preview.dart';
 import 'package:tedxcomments_app/widgets/comments_list.dart';
 import 'package:tedxcomments_app/widgets/related_videos_list.dart';
@@ -17,21 +19,53 @@ class VideoPage extends StatefulWidget {
 }
 
 class _VideoPageState extends State<VideoPage> {
-  late final Talk talk;
+  late Talk talk;
   late final String videoUrl;
   late final WebViewController controller;
   final DraggableScrollableController sheetController =
       DraggableScrollableController();
 
+  late final SharedPreferences prefs;
+
   late final Timer timer;
+
+  final GlobalKey<FormState> _commentFormKey = GlobalKey<FormState>();
 
   List<Comment?> comments = [];
 
   Comment? comment;
+  String username = "";
+
+  void _initPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString("username")!;
+    });
+  }
+
+  void updateTalk() {
+    DataProvider.getCommentsById(talk.id).then((value) {
+      setState(() {
+        comments = [];
+        comments += value["info"]
+            .map<Comment?>((model) => Comment.fromJSON(model))
+            .toList();
+        comments += value["disc"]
+            .map<Comment?>((model) => Comment.fromJSON(model))
+            .toList();
+        comments += value["extra"]
+            .map<Comment?>((model) => Comment.fromJSON(model))
+            .toList();
+
+        comments.sort((a, b) => a!.timestamp.compareTo(b!.timestamp));
+      });
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    _initPrefs();
     talk = widget.talk;
     videoUrl = talk.url.replaceFirst("https://www", "https://embed");
 
@@ -207,7 +241,27 @@ class _VideoPageState extends State<VideoPage> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: IconButton(
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            String timeStr = await controller
+                                                    .runJavaScriptReturningResult(
+                                                        "document.getElementsByClassName('Embeddable__controls__current')[0].innerHTML")
+                                                as String;
+                                            final ms = timeStr
+                                                .replaceAll("\"", "")
+                                                .split(":");
+                                            int time = int.parse(ms[0]) * 60 +
+                                                int.parse(ms[1]);
+                                            
+                                            if(!context.mounted) return;
+                                            showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    _commentPopUp(
+                                                        context,
+                                                        timeStr.replaceAll(
+                                                            "\"", ""),
+                                                        time));
+                                          },
                                           icon: const Icon(Icons.add_comment)),
                                     )
                                   ],
@@ -243,5 +297,62 @@ class _VideoPageState extends State<VideoPage> {
         comment = res;
       }
     });
+  }
+
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController bodyController = TextEditingController();
+
+  Widget _commentPopUp(BuildContext context, String timeStr, int time) {
+    return AlertDialog(
+      title: Text("New Comment $timeStr"),
+      content: SingleChildScrollView(
+        child: Form(
+            key: _commentFormKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextFormField(
+                  controller: titleController,
+                  decoration: const InputDecoration(hintText: "Title"),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Comment title can't be empty";
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  controller: bodyController,
+                  decoration: const InputDecoration(hintText: "Body"),
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Comment body can't be empty";
+                    }
+                    return null;
+                  },
+                ),
+                const Padding(padding: EdgeInsets.only(top: 20)),
+                OutlinedButton(
+                    onPressed: () {
+                      if (_commentFormKey.currentState!.validate()) {
+                        String title = titleController.text;
+                        String body = bodyController.text;
+                        DataProvider.insertComment(
+                                talk.id, title, body, time, username)
+                            .then((value) {
+                          updateTalk();
+                        });
+                        titleController.clear();
+                        bodyController.clear();
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text("Insert"))
+              ],
+            )),
+      ),
+    );
   }
 }

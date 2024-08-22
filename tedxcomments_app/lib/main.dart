@@ -5,7 +5,7 @@ import 'package:tedxcomments_app/pages/login_page.dart';
 void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     systemNavigationBarColor:
-        Color(0xFF211f26), // Change this to your desired color
+        Color(0xFF211f26),
   ));
   runApp(const MyApp());
 }

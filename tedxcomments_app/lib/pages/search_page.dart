@@ -59,7 +59,6 @@ Widget generateText() {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final _commentFormKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,74 +82,9 @@ class _SearchPageState extends State<SearchPage> {
             Padding(
                 padding: const EdgeInsets.only(left: 30.0),
                 child: generateText()),
-            FloatingActionButton(onPressed: () {
-              showDialog(
-                  context: context,
-                  builder: (BuildContextm) =>
-                      _commentPopUp(context, _commentFormKey));
-            })
+            
           ],
         ));
   }
 }
 
-Widget _commentPopUp(BuildContext context, commentFormKey) {
-  return AlertDialog(
-    title: const Text("New Comment"),
-    content: SingleChildScrollView(
-      child: Form(
-          key: commentFormKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                decoration: InputDecoration(hintText: "Title"),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Comment can't be empty";
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(hintText: "Body"),
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return "Comment can't be empty";
-                  }
-                  return null;
-                },
-              ),
-              Row(
-                children: [
-                  SizedBox(
-                      width: 30,
-                      child: TextFormField(
-                          decoration: InputDecoration(hintText: "min"),
-                          keyboardType: TextInputType.number)),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(":",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  SizedBox(
-                      width: 30,
-                      child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(hintText: "sec"),
-                      )),
-                ],
-              ),
-              const Padding(padding: EdgeInsets.only(top: 20)),
-              OutlinedButton(
-                  onPressed: () {
-                    // if(commentFormKey.currontState.validate())
-                  },
-                  child: const Text("Insert"))
-            ],
-          )),
-    ),
-  );
-}
