@@ -68,7 +68,7 @@ class _VideoPageState extends State<VideoPage> {
     _initPrefs();
     talk = widget.talk;
     videoUrl = talk.url.replaceFirst("https://www", "https://embed");
-
+    updateTalk();
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0x00000000))
